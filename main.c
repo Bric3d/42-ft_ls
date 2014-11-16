@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/13 17:17:05 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/14 19:32:49 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/11/16 12:02:16 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,6 @@ int	ft_error(int i, char **av, char *str)
 {
 	ft_putstr(av[0]);
 	ft_putstr(": ");
-	if (!str)
-		str = ft_strjoin(str, "fts_open");
 	if (errno == EACCES || errno == ENOENT)
 	{
 		ft_putstr(str);
