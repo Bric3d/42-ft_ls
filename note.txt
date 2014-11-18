@@ -1,0 +1,3 @@
+dirwork	:	use the dir given to it to open it and store the data in a list
+			use strcmp to compare the differents files and display them correctly
+			and in order

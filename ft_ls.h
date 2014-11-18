@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/14 11:20:06 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/16 17:17:34 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/11/18 15:01:09 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ typedef struct	s_arg
 
 typedef struct	s_list
 {
-	struct t_list	*prv;
-	struct t_list	*nxt;
+	struct	s_list	*prv;
+	struct	s_list	*nxt;
 	char			*name;
 	int				sub;
 }				t_list;
