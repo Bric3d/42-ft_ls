@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/16 12:05:00 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/18 19:31:06 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/11/19 19:22:49 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <sys/types.h>
 #include <sys/dir.h>
 #include <sys/uio.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include "libft.h"
 #include <errno.h>
@@ -148,6 +149,42 @@ void	ft_placebetween(t_list *list, t_list *list1, t_list *list2)
 	list2->prv = list;
 }
 
+t_list	*ft_placelistent_da(t_list *list, t_list *list2)
+{
+	while (ft_strcmp(list->name, list2->name) > 0 && list->date == list2->date
+			&& list2->nxt)
+		list2 = list2->nxt;
+	if (list2->prv == NULL && ft_strcmp(list->name, list2->name) <= 0)
+		ft_placebefore(list, list2);
+	else if (list2->nxt == NULL && ft_strcmp(list->name, list2->name) >= 0)
+		ft_placebefore(list2, list);
+	else
+		ft_placebetween(list, list2->prv, list2);
+	return (list);
+}
+
+t_list	*ft_placelistent_d(t_list *list, t_list *list2)
+{
+	if (!list2)
+		return (list);
+	while (list2->prv)
+	{
+		list2 = list2->prv;	
+		ft_putendl(list2->name);
+	}
+	while (list->date < list2->date && list2->nxt)
+		list2 = list2->nxt;
+	if (list2->prv == NULL && list->date > list2->date)
+		ft_placebefore(list, list2);
+	else if (list2->nxt == NULL && list->date < list2->date)
+		ft_placebefore(list2, list);
+	else if (list->date == list->date)
+		ft_placelistent_da(list, list);
+	else
+		ft_placebetween(list, list2->prv, list2);
+	return (list);
+}
+
 t_list	*ft_placeelement(t_list *list1, t_list *list2)
 {
 	if (!list2)
@@ -165,50 +202,68 @@ t_list	*ft_placeelement(t_list *list1, t_list *list2)
 	return (list1);
 }
 
-t_list	*ls_list_read(struct dirent *entry, t_arg *arg, t_list *list)
+t_list	*ft_list_read(struct dirent *entry, t_arg *arg, t_list *list)
 {
-	t_list	*new;
+	t_list		*new;
+	struct stat	buf;
 
 	new = ft_createlistelem();
 	if ((new->name = (char*)ft_memalloc(ft_strlen(entry->d_name))) == NULL)
 		ft_error(0, NULL, NULL);
 	ft_strcpy(new->name, entry->d_name);
-	list = ft_placeelement(new, list);
+	if (arg->t == 0)
+		list = ft_placeelement(new, list);
+	else if (arg->t == 1)
+	{
+		ft_putendl("Passing trough");
+		stat(entry->d_name, &buf);
+		new->date = buf.st_ctime;
+		list = ft_placelistent_d(new, list);
+	}
 	return (list);
 }
 
-int		ft_list_dir(char *name, t_arg *arg)
+int ft_print_list(t_list *list, t_arg *arg)
+{
+	while (list->prv && arg->r == 0)
+		list = list->prv;
+	while (list->nxt && arg->r == 0)
+	{
+		if (list->name[0] != '.' || arg->a == 1)
+			ft_putendl(list->name);
+		list = list->nxt;
+	}
+	while (list->nxt && arg->r == 1)
+		list = list->nxt;
+	while (list->prv && arg->r == 1)
+	{
+		if (list->name[0] != '.' || arg->a == 1)
+			ft_putendl(list->name);
+		list = list->prv;
+	}
+	ft_putendl(list->name);
+	if (arg->R == 1)
+		return (0);
+	return (0);
+}
+
+int		ft_list_dir(char *path, t_arg *arg)
 {
 	DIR				*dir;
 	struct dirent	*entry;
 	t_list			*list;
 
 	list = NULL;
-	if ((dir = opendir(name)) == NULL)
+	if ((dir = opendir(path)) == NULL)
 	{
 		ft_error(0, NULL, NULL);
 		return (0);
 	}
 	while ((entry = readdir(dir)))
-		if (entry->d_name[0] != '.' || (arg->a))
 			list = ft_list_read(entry, arg, list);
 	if ((closedir(dir)) == -1)
 		ft_error(0, NULL, NULL);
 	ft_print_list(list, arg);
-}
-
-int ft_print_list(t_list *list, t_arg *arg)
-{
-	while (list->prv)
-		list = list->prv;
-	while (list->nxt)
-	{
-		ft_putstr(list->name);
-		list = list->nxt;
-	}
-	ft_putendl(list->name);
-	if (arg.R == 1)
-		return (0);
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/16 12:05:00 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/16 19:56:48 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/11/18 09:45:51 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,33 +125,33 @@ t_list	*ft_createlistelem(void)
 }
 
 /*
-** createlistelem-> Create a simple element of the list, put NULL everywhere.
-** placebefore	--> PUT lis1 before list2. Want to place something after ?
-**					It's the same function dude. Yeah I know.
-** placebetween  -> Put list between list1 and list2
-** placeelement	 -> Take an un-implemented element list1 and an implemented
-**					element list2, and go back and forth in the chain to
-**					place list1 in the right place.
-*/
+ ** createlistelem-> Create a simple element of the list, put NULL everywhere.
+ ** placebefore	--> PUT lis1 before list2. Want to place something after ?
+ **					It's the same function dude. Yeah I know.
+ ** placebetween  -> Put list between list1 and list2
+ ** placeelement	 -> Take an un-implemented element list1 and an implemented
+ **					element list2, and go back and forth in the chain to
+ **					place list1 in the right place.
+ */
 
 void	ft_placebefore(t_list *list1, t_list *list2)
 {
 	list1->nxt = list2;
-	list2->prv = list;
+	list2->prv = list1;
 }
 
 void	ft_placebetween(t_list *list, t_list *list1, t_list *list2)
 {
 	list1->nxt = list;
 	list->prv = list1;
-	list->next = list2;
+	list->nxt = list2;
 	list2->prv = list;
 }
 
-t_list	ft_placeelement(t_list *list1, t_list *list2)
+t_list	*ft_placeelement(t_list *list1, t_list *list2)
 {
 	if (!list2)
-		return(list)
+		return(list1);
 	while (list2->prv)
 		list2 = list2->prv;
 	while (ft_strcmp(list1->name, list2->name) > 0)
@@ -161,7 +161,7 @@ t_list	ft_placeelement(t_list *list1, t_list *list2)
 	else if (list2->nxt == NULL && ft_strcmp(list1->name, list2->name) >= 0)
 		ft_placebefore(list2, list1);
 	else
-		ft_placebetween(list1. list2->prev, list2);
+		ft_placebetween(list1, list2->prv, list2);
 	return (list1);
 }
 
@@ -178,7 +178,7 @@ int	main(int ac, char **av)
 		while (i <= ac - 1)
 		{
 			if ((dir = opendir(av[i++])))
-				
+				ft_diropen(dir, arg, av);
 			else
 				ft_error(i, av, av[i - 1]);
 		}

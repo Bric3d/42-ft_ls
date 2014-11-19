@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/14 11:20:06 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/18 15:01:09 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/11/19 11:19:50 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct	s_list
 	struct	s_list	*nxt;
 	char			*name;
 	int				sub;
+	int				date;
 }				t_list;
 
 #endif
