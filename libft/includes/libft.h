@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/03 12:03:42 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/10 08:42:24 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/11/20 11:43:01 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ int		ft_toupper(int c);
 int		ft_tolower(int c);
 void	*ft_memalloc(size_t size);
 void	ft_memdel(void **ap);
+char	*ft_strjoinnfree(char *s1, char *s2);
 char	*ft_strnew(size_t size);
 void	ft_strdel(char **as);
 void	ft_strcrl(char *s);

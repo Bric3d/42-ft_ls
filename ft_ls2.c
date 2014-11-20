@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/16 12:05:00 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/19 19:22:49 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/11/20 19:15:27 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include <unistd.h>
 #include "libft.h"
 #include <errno.h>
+#include <stdlib.h>
 
 int ft_checkarg(char *str)
 {
@@ -82,6 +83,10 @@ int ft_arguments(t_arg *arg, char **av)
 
 int	ft_error(int i, char **av, char *str)
 {
+	i = (int)i;
+	av = (char **)av;
+	str = (char *)str;
+	/*
 	ft_putstr(av[0]);
 	ft_putstr(": ");
 	if (errno == EACCES || errno == ENOENT)
@@ -102,7 +107,7 @@ int	ft_error(int i, char **av, char *str)
 		ft_putstr_fd("\nusage: ", 2);
 		ft_putstr(av[0]);
 		ft_putendl_fd(" [-alrtR] [file ...]", 2);
-	}
+	}*/
 	/*
 	 * if (errno == )
 	 * ft_putendl_fd("");
@@ -168,18 +173,15 @@ t_list	*ft_placelistent_d(t_list *list, t_list *list2)
 	if (!list2)
 		return (list);
 	while (list2->prv)
-	{
-		list2 = list2->prv;	
-		ft_putendl(list2->name);
-	}
+		list2 = list2->prv;
 	while (list->date < list2->date && list2->nxt)
 		list2 = list2->nxt;
 	if (list2->prv == NULL && list->date > list2->date)
 		ft_placebefore(list, list2);
 	else if (list2->nxt == NULL && list->date < list2->date)
 		ft_placebefore(list2, list);
-	else if (list->date == list->date)
-		ft_placelistent_da(list, list);
+	else if (list->date == list2->date)
+		ft_placelistent_da(list, list2);
 	else
 		ft_placebetween(list, list2->prv, list2);
 	return (list);
@@ -202,7 +204,35 @@ t_list	*ft_placeelement(t_list *list1, t_list *list2)
 	return (list1);
 }
 
-t_list	*ft_list_read(struct dirent *entry, t_arg *arg, t_list *list)
+void	ft_isdir(t_list *list)
+{
+	DIR	*dir;
+
+	errno = 0;
+	if ((dir = opendir(list->path)) == NULL)
+	{
+		if (errno == ENOTDIR)
+			list->sub = 0;
+		else
+			list->sub = 1;
+	}
+	else
+	{
+		list->sub = 1;
+		closedir(dir);
+	}
+}
+
+void	ft_write_path(char *prev, t_list *list)
+{
+	char	*tmp;
+
+	tmp = ft_strjoin(prev, "/");
+	list->path = ft_strjoin(tmp, list->name);
+	free(tmp);
+}
+
+t_list	*ft_list_read(struct dirent *entry, t_arg *arg, t_list *list, char *dr)
 {
 	t_list		*new;
 	struct stat	buf;
@@ -211,16 +241,30 @@ t_list	*ft_list_read(struct dirent *entry, t_arg *arg, t_list *list)
 	if ((new->name = (char*)ft_memalloc(ft_strlen(entry->d_name))) == NULL)
 		ft_error(0, NULL, NULL);
 	ft_strcpy(new->name, entry->d_name);
+	ft_write_path(dr, new);
+	stat(new->path, &buf);
+	new->date = buf.st_ctime;
+	ft_isdir(new);
 	if (arg->t == 0)
 		list = ft_placeelement(new, list);
 	else if (arg->t == 1)
-	{
-		ft_putendl("Passing trough");
-		stat(entry->d_name, &buf);
-		new->date = buf.st_ctime;
 		list = ft_placelistent_d(new, list);
-	}
 	return (list);
+}
+
+int	ft_recursive(t_list *list, t_arg *arg)
+{
+	while (list->prv)
+		list = list->prv;
+	while (list->nxt)
+	{
+		if (list->sub == 1 && list->name[0] != '.')
+			ft_list_dir(list->path, arg, 3);
+		list = list->nxt;
+	}
+	if (list->sub == 1)
+		ft_list_dir(list->path, arg, 3);
+	return (0);
 }
 
 int ft_print_list(t_list *list, t_arg *arg)
@@ -229,6 +273,7 @@ int ft_print_list(t_list *list, t_arg *arg)
 		list = list->prv;
 	while (list->nxt && arg->r == 0)
 	{
+		ft_putnbr(list->sub);
 		if (list->name[0] != '.' || arg->a == 1)
 			ft_putendl(list->name);
 		list = list->nxt;
@@ -241,18 +286,22 @@ int ft_print_list(t_list *list, t_arg *arg)
 			ft_putendl(list->name);
 		list = list->prv;
 	}
-	ft_putendl(list->name);
-	if (arg->R == 1)
-		return (0);
+	if (list->name[0] != '.' || arg->a == 1)
+		ft_putendl(list->name);
 	return (0);
 }
 
-int		ft_list_dir(char *path, t_arg *arg)
+int		ft_list_dir(char *path, t_arg *arg, int ac)
 {
 	DIR				*dir;
 	struct dirent	*entry;
 	t_list			*list;
 
+	if (ac > 2)
+	{
+		ft_putstr(path);
+		ft_putendl(":");
+	}
 	list = NULL;
 	if ((dir = opendir(path)) == NULL)
 	{
@@ -260,10 +309,12 @@ int		ft_list_dir(char *path, t_arg *arg)
 		return (0);
 	}
 	while ((entry = readdir(dir)))
-			list = ft_list_read(entry, arg, list);
+		list = ft_list_read(entry, arg, list, path);
 	if ((closedir(dir)) == -1)
 		ft_error(0, NULL, NULL);
 	ft_print_list(list, arg);
+	if (arg->R == 1)
+		ft_recursive(list, arg);
 	return (0);
 }
 
@@ -276,11 +327,14 @@ int	main(int ac, char **av)
 	i = ft_arguments(arg, av);
 	if (i < ac && i > 0)
 	{
-		while (i <= ac - 1)
-			ft_list_dir(av[i++], arg);
+		while (i < ac)
+		{
+			ft_list_dir(av[i], arg, ac - i - 1);
+			i++;
+		}
 	}
 	else if (i >= 0)
-		ft_list_dir(".", arg);
+		ft_list_dir(".", arg, 0);
 	else
 		ft_error(i, av, NULL);
 	return (0);
