@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/14 11:20:06 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/20 19:15:29 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/11/21 16:08:38 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 # include "libft.h"
 # include <errno.h>
 # include <stdlib.h>
+# include <time.h>
+# include <stdio.h>
 
 typedef struct	s_arg
 {
@@ -41,11 +43,11 @@ typedef struct	s_list
 	char			*name;
 	char			*path;
 	int				sub;
-	int				date;
+	time_t			date;
 }				t_list;
 
-int		ft_list_dir(char *path, t_arg *arg, int ac);
-int		ft_print_list(t_list *list, t_arg *arg);
+int		ft_list_dir(char *path, t_arg *arg, int ac, char *name);
+int		ft_print_list(t_list *list, t_arg *arg, char *name);
 t_list	*ft_list_read(struct dirent *entry, t_arg *arg, t_list *list, char *dr);
 void	ft_write_path(char *prev, t_list *list);
 void	ft_isdir(t_list *list);
@@ -58,6 +60,6 @@ t_list	*ft_createlistelem(void);
 int		ft_arguments(t_arg *arg, char **av);
 int		ft_arg(t_arg *arg, char *str);
 int		ft_checkarg(char *str);
-int		ft_recursive(t_list *list, t_arg *arg);
+int		ft_recursive(t_list *list, t_arg *arg, char *name);
 
 #endif
