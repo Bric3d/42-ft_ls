@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/16 12:05:00 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/21 21:48:12 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/11/22 18:03:52 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ int ft_arguments(t_arg *arg, char **av)
 		{
 			if ((b =ft_arg(arg, av[i])) < 0)
 			{
-				errno = 60;
+				errno = 1020;
 				return (b);
 			}
 		}
@@ -86,10 +86,10 @@ int	ft_error(int i, char *str)
 	ft_putstr("ft_ls: ");
 	if (errno == EACCES || errno == ENOENT)
 	{
-		if (str[0])
+		if (str)
 			perror(str);
 		else
-			perror("fts_open");
+			perror("ft_list_dir: ");
 		/*ft_putstr("fts_open");
 		ft_putstr(": ");
 		//perror(str);
@@ -98,9 +98,9 @@ int	ft_error(int i, char *str)
 		if (errno == ENOENT)
 			ft_putendl_fd("No such file or directory", 2);*/
 	}
-	if (errno == ENOTDIR)
+	else if (errno == ENOTDIR)
 		return (1);
-	if (errno == 60)
+	else if (errno == 1020)
 	{
 		ft_putstr_fd("illegal option -- ", 2);
 		ft_putchar_fd(-i, 2);
@@ -205,27 +205,50 @@ t_list	*ft_placeelement(t_list *list1, t_list *list2)
 	return (list1);
 }
 
-void	ft_free(t_list	*list)
+t_list	*ft_freerev(t_list	*list)
 {
+	t_list	*listtmp;
+
+	listtmp = NULL;
 	if (list)
 	{
-		while (list->prv)
-			list = list->prv;
-		while (list->nxt)
-		{
-			if (list->prv)
-				free(list->prv);
-			free(list->name);
-			free(list->path);
-			list = list->nxt;
-		}
 		if (list->prv)
-			free(list->prv);
+			listtmp = list->prv;
+		else
+			listtmp = NULL;
+		list->prv = NULL;
+		list->nxt = NULL;
 		free(list->name);
 		free(list->path);
-		list = list->nxt;
-		free(list);	
+		list->sub = 0;
+		list->date = 0;
+		free(list);
 	}
+	return (listtmp);
+}
+
+
+
+t_list	*ft_free(t_list	*list)
+{
+	t_list	*listtmp;
+
+	listtmp = NULL;
+	if (list)
+	{
+		if (list->nxt)
+			listtmp = list->nxt;
+		else
+			listtmp = NULL;
+		list->prv = NULL;
+		list->nxt = NULL;
+		free(list->name);
+		free(list->path);
+		list->sub = 0;
+		list->date = 0;
+		free(list);
+	}
+	return (listtmp);
 }
 
 void	ft_isdir(t_list *list)
@@ -245,6 +268,8 @@ void	ft_isdir(t_list *list)
 		list->sub = 1;
 		closedir(dir);
 	}
+	if (list->st_mode == S_IFLNK)
+		list->sub = 0;
 }
 
 void	ft_write_path(char *prev, t_list *list)
@@ -277,17 +302,49 @@ t_list	*ft_list_read(struct dirent *entry, t_arg *arg, t_list *list, char *dr)
 	new->name = (char*)ft_memalloc(ft_strlen(entry->d_name));
 	buf = (struct stat*)malloc(sizeof(struct stat));
 	if (new->name == NULL || buf == NULL)
+	{
 		ft_error(0, "malloc");
+		return (NULL);
+	}
 	ft_strcpy(new->name, entry->d_name);
 	ft_write_path(dr, new);
 	stat(new->path, buf);
 	new->date = buf->st_mtime;
+	new->st_mode = buf->st_mode;
 	ft_isdir(new);
 	if (arg->t == 0)
 		list = ft_placeelement(new, list);
 	else if (arg->t == 1)
 		list = ft_placelistent_d(new, list);
+	free(buf);
 	return (list);
+}
+
+int	ft_recursiverev(t_list *list, t_arg *arg, char *name)
+{
+	while (list->nxt)
+		list = list->nxt;
+	while (list && list->prv)
+	{
+		if (list->sub == 1 && ft_strcmp(list->name, "..") != 0
+				&&	ft_strcmp(list->name, ".") != 0)
+		{
+			if (name[0] != '.' || arg->a == 1)
+				ft_putchar('\n');
+			ft_list_dir(list->path, arg, 3, list->name);
+		}
+		list = ft_freerev(list);
+	}
+	if (list->sub == 1 && ft_strcmp(list->name, "..") != 0
+			&&	ft_strcmp(list->name, ".") != 0 && list)
+	{
+		if (name[0] != '.' || arg->a == 1)
+			ft_putchar('\n');
+		ft_list_dir(list->path, arg, 3, list->name);
+		list = ft_freerev(list);
+		free(list);
+	}
+	return (0);
 }
 
 int	ft_recursive(t_list *list, t_arg *arg, char *name)
@@ -303,7 +360,7 @@ int	ft_recursive(t_list *list, t_arg *arg, char *name)
 				ft_putchar('\n');
 			ft_list_dir(list->path, arg, 3, list->name);
 		}
-		list = list->nxt;
+		list = ft_free(list);
 	}
 	if (list->sub == 1 && ft_strcmp(list->name, "..") != 0
 			&&	ft_strcmp(list->name, ".") != 0)
@@ -311,13 +368,14 @@ int	ft_recursive(t_list *list, t_arg *arg, char *name)
 		if (name[0] != '.' || arg->a == 1)
 			ft_putchar('\n');
 		ft_list_dir(list->path, arg, 3, list->name);
+		list = ft_free(list);
 	}
 	return (0);
 }
 
 int ft_print_list(t_list *list, t_arg *arg, char *name)
 {
-	if (name[0] != '.' || arg->a == 1)
+	if (list && (name[0] != '.' || arg->a == 1))
 	{
 		while (list->prv && arg->r == 0)
 			list = list->prv;
@@ -341,6 +399,18 @@ int ft_print_list(t_list *list, t_arg *arg, char *name)
 	return (0);
 }
 
+int	ft_recurchoice(t_list *list, t_arg *arg, char *name)
+{
+	int ret;
+
+	ret = 0;
+	if (arg->R == 1 && arg->r == 0)
+		ret = ft_recursive(list, arg, name);
+	else if (arg->R == 1 && arg->r == 1)
+		ret = ft_recursiverev(list, arg, name);
+	return (ret);
+}
+
 int		ft_list_dir(char *path, t_arg *arg, int ac, char *name)
 {
 	DIR				*dir;
@@ -361,15 +431,30 @@ int		ft_list_dir(char *path, t_arg *arg, int ac, char *name)
 	while ((entry = readdir(dir)))
 		list = ft_list_read(entry, arg, list, path);
 	if ((closedir(dir)) == -1)
+	{
 		ft_error(0, name);
+		return (-1);
+	}
 	ft_print_list(list, arg, name);
-	if (arg->R == 1)
-		ft_recursive(list, arg, name);
-	ft_free(list);
+	ft_recurchoice(list, arg, name);
 	return (0);
 }
 
-int	main(int ac, char **av)
+char	*ft_get_name(char *str)
+{
+	int i;
+
+	i = ft_strlen(str) - 1;
+	while (str[i])
+	{
+		if (str[i] == '/')
+			return (&str[i + 1]);
+		i--;
+	}
+	return (str);
+}
+
+int		main(int ac, char **av)
 {
 	int		i;
 	t_arg	*arg;
@@ -378,18 +463,21 @@ int	main(int ac, char **av)
 	arg = ft_memalloc(sizeof(arg));
 	i = ft_arguments(arg, av);
 	b = i;
-	if (i < ac && i > 0)
+	if (i < ac && i > 0 && arg != NULL)
 	{
 		while (i < ac)
 		{
-			ft_list_dir(av[i++], arg, ac - b, "");
+			ft_list_dir(av[i], arg, ac - b, ft_get_name(av[i]));
+			i++;
 			if (ac - b >= 2)
 				ft_putchar('\n');
 		}
 	}
-	else if (i >= 0)
-		ft_list_dir(".", arg, 0, "");
-	else
+	else if (i >= 0 && arg != NULL)
+		ft_list_dir(".", arg, 0, ".");
+	else if (i < 0)
 		ft_error(i, NULL);
+	else
+		ft_error(0, "malloc");
 	return (0);
 }

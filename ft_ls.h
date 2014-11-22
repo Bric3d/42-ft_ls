@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/14 11:20:06 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/21 16:08:38 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/11/22 18:03:56 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct	s_list
 	char			*path;
 	int				sub;
 	time_t			date;
+	mode_t			st_mode;
 }				t_list;
 
 int		ft_list_dir(char *path, t_arg *arg, int ac, char *name);
