@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/16 12:05:00 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/22 18:03:52 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/11/23 17:52:06 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int	ft_error(int i, char *str)
 		if (str)
 			perror(str);
 		else
-			perror("ft_list_dir: ");
+			perror("fts_open: ");
 		/*ft_putstr("fts_open");
 		ft_putstr(": ");
 		//perror(str);
@@ -256,20 +256,23 @@ void	ft_isdir(t_list *list)
 	DIR	*dir;
 
 	errno = 0;
-	if ((dir = opendir(list->path)) == NULL)
-	{
-		if (errno == ENOTDIR)
-			list->sub = 0;
+	if (list)
+		{
+		if ((dir = opendir(list->path)) == NULL)
+		{
+			if (errno == ENOTDIR)
+				list->sub = 0;
+			else
+				list->sub = 1;
+		}
 		else
+		{
 			list->sub = 1;
+			closedir(dir);
+		}
+		if (list->st_mode == S_IFLNK)
+			list->sub = 0;
 	}
-	else
-	{
-		list->sub = 1;
-		closedir(dir);
-	}
-	if (list->st_mode == S_IFLNK)
-		list->sub = 0;
 }
 
 void	ft_write_path(char *prev, t_list *list)
@@ -373,9 +376,9 @@ int	ft_recursive(t_list *list, t_arg *arg, char *name)
 	return (0);
 }
 
-int ft_print_list(t_list *list, t_arg *arg, char *name)
+int	ft_print_list_st(t_list *list, t_arg *arg, char *name)
 {
-	if (list && (name[0] != '.' || arg->a == 1))
+	if (list && name && (name[0] != '.' || arg->a == 1))
 	{
 		while (list->prv && arg->r == 0)
 			list = list->prv;
@@ -385,6 +388,16 @@ int ft_print_list(t_list *list, t_arg *arg, char *name)
 				ft_putendl(list->name);
 			list = list->nxt;
 		}
+		if (list->name[0] != '.' || arg->a == 1)
+		ft_putendl(list->name);
+	}
+	return (0);
+}
+
+int	ft_print_list_rev(t_list *list, t_arg *arg, char *name)
+{
+	if (list && name && (name[0] != '.' || arg->a == 1))
+	{
 		while (list->nxt && arg->r == 1)
 			list = list->nxt;
 		while (list->prv && arg->r == 1)
@@ -396,6 +409,15 @@ int ft_print_list(t_list *list, t_arg *arg, char *name)
 		if (list->name[0] != '.' || arg->a == 1)
 			ft_putendl(list->name);
 	}
+	return (0);
+}
+
+int	ft_print_list(t_list *list, t_arg *arg, char *name)
+{
+	if (list && arg->r == 0)
+		ft_print_list_st(list, arg, name);
+	if (list && arg->r == 1)
+		ft_print_list_rev(list, arg, name);
 	return (0);
 }
 
@@ -417,7 +439,7 @@ int		ft_list_dir(char *path, t_arg *arg, int ac, char *name)
 	struct dirent	*entry;
 	t_list			*list;
 
-	if (ac >= 2 && (name[0] != '.' || arg->a == 1))
+	if (ac >= 2 && name && (name[0] != '.' || arg->a == 1))
 	{
 		ft_putstr(path);
 		ft_putendl(":");
@@ -430,7 +452,7 @@ int		ft_list_dir(char *path, t_arg *arg, int ac, char *name)
 	}
 	while ((entry = readdir(dir)))
 		list = ft_list_read(entry, arg, list, path);
-	if ((closedir(dir)) == -1)
+	if ((closedir(dir)) == -1 || list == NULL)
 	{
 		ft_error(0, name);
 		return (-1);
