@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_ls.c                                            :+:      :+:    :+:   */
+/*   ft_ls2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/16 12:05:00 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/23 17:52:06 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/11/24 19:57:46 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int ft_arg(t_arg *arg, char *str)
 		if (str[i] == 'l')
 			arg->l = 1;
 		else if (str[i] == 'R')
-			arg->R = 1;
+			arg->rr = 1;
 		else if (str[i] == 'a')
 			arg->a = 1;
 		else if (str[i] == 'r')
@@ -90,13 +90,6 @@ int	ft_error(int i, char *str)
 			perror(str);
 		else
 			perror("fts_open: ");
-		/*ft_putstr("fts_open");
-		ft_putstr(": ");
-		//perror(str);
-		if (errno == EACCES)
-			ft_putendl_fd("Permission denied", 2);
-		if (errno == ENOENT)
-			ft_putendl_fd("No such file or directory", 2);*/
 	}
 	else if (errno == ENOTDIR)
 		return (1);
@@ -105,16 +98,10 @@ int	ft_error(int i, char *str)
 		ft_putstr_fd("illegal option -- ", 2);
 		ft_putchar_fd(-i, 2);
 		ft_putstr_fd("\nusage: ", 2);
-		ft_putendl_fd("ft_ls [-alrtR] [file ...]", 2);
+		ft_putendl_fd("ft_ls [-alrtrr] [file ...]", 2);
 	}
 	else
 		perror(str);
-	/*
-	 * if (errno == )
-	 * ft_putendl_fd("");
-	 * if (errno == )
-	 * ft_putendl_fd("");
-	 */
 	return (0);
 }
 
@@ -227,8 +214,6 @@ t_list	*ft_freerev(t_list	*list)
 	return (listtmp);
 }
 
-
-
 t_list	*ft_free(t_list	*list)
 {
 	t_list	*listtmp;
@@ -257,7 +242,7 @@ void	ft_isdir(t_list *list)
 
 	errno = 0;
 	if (list)
-		{
+	{
 		if ((dir = opendir(list->path)) == NULL)
 		{
 			if (errno == ENOTDIR)
@@ -296,6 +281,21 @@ void	ft_write_path(char *prev, t_list *list)
 		}*/
 }
 
+void	ft_stat(t_list *new, struct stat *buf)
+{
+	stat(new->path, buf);
+	new->st_mode = buf->st_mode;
+	ft_isdir(new);
+	if (new->sub == 1)
+	{
+		lstat(new->path, buf);
+		new->st_mode = buf->st_mode;
+	}
+	new->date = buf->st_mtime;
+	new->st_mode = buf->st_mode;
+	new->st_size = buf->st_size;
+}
+
 t_list	*ft_list_read(struct dirent *entry, t_arg *arg, t_list *list, char *dr)
 {
 	t_list		*new;
@@ -311,10 +311,7 @@ t_list	*ft_list_read(struct dirent *entry, t_arg *arg, t_list *list, char *dr)
 	}
 	ft_strcpy(new->name, entry->d_name);
 	ft_write_path(dr, new);
-	stat(new->path, buf);
-	new->date = buf->st_mtime;
-	new->st_mode = buf->st_mode;
-	ft_isdir(new);
+	ft_stat(new, buf);
 	if (arg->t == 0)
 		list = ft_placeelement(new, list);
 	else if (arg->t == 1)
@@ -376,39 +373,126 @@ int	ft_recursive(t_list *list, t_arg *arg, char *name)
 	return (0);
 }
 
-int	ft_print_list_st(t_list *list, t_arg *arg, char *name)
+void	ft_print_size(t_size *size, t_list *list, t_arg *arg)
 {
-	if (list && name && (name[0] != '.' || arg->a == 1))
+	int n;
+	if (arg->l == 1)
 	{
-		while (list->prv && arg->r == 0)
+		n = size->size - ft_countnum(list->st_size);
+		while (n-- > 0)
+			ft_putchar(' ');
+		ft_putnbr(list->st_size);
+		ft_putchar(' ');
+	}
+}
+
+void	ft_print(t_size *size, t_list *list, t_arg *arg)
+{
+	ft_print_size(size, list, arg);
+	ft_print_time(list->date, arg);
+	ft_putendl(list->name);
+}
+
+void	ft_print_time(time_t date, t_arg *arg)
+{
+	char	*str;
+	char	**tab;
+
+	if (arg->l == 1)
+	{
+		str = ctime(&date);
+		tab = ft_strsplit(str, ' ');
+		ft_putstr(tab[1]);
+		ft_putchar(' ');
+		ft_putstr(tab[2]);
+		ft_putchar(' ');
+		if ((time(0) - date) > 15778463 || ((time(0) - date) < 0))
+		{
+			ft_putnstr(tab[4], 4);
+			ft_putchar(' ');
+		}
+		else
+			ft_putnstr(tab[3], 5);
+		ft_strdel(tab);
+		ft_putchar(' ');
+	}
+}
+
+t_size	*ft_calcsize(t_list *list, t_arg *arg)
+{
+	t_size	*size;
+
+	if (list && arg->l = 1)
+	{
+		if ((size = (struct size*)ft_memalloc(sizeof(struct size))) == NULL)
+		{
+			ft_error(0, "Malloc");
+			return (NULL);
+		}
+	}
+}
+void	ft_maxsize(t_list *list, t_size *size)
+{
+	int maxsize;
+	int i;
+
+	maxsize = 0;
+	while (list->prv)
+		list = list->prv;
+	while (list->nxt)
+	{
+		i = ft_countnum(list->st_size);
+		if (maxsize < i)
+			maxsize = i;
+		list = list->nxt;
+	}
+	i = ft_countnum(list->st_size);
+	if (maxsize < i)
+		maxsize = i;
+	size->maxsize = maxsize;
+}
+
+int		ft_print_list_st(t_list *list, t_arg *arg, char *name)
+{
+	t_size	*size;
+
+	if (list && name && (name[0] != '.' || arg->a == 1 || arg->root == 1))
+	{
+		while (list->prv)
 			list = list->prv;
-		while (list->nxt && arg->r == 0)
+		size = ft_calcsize(list, arg);
+		while (list->nxt)
 		{
 			if (list->name[0] != '.' || arg->a == 1)
-				ft_putendl(list->name);
+				ft_print(maxsize, list, arg);
 			list = list->nxt;
 		}
 		if (list->name[0] != '.' || arg->a == 1)
-		ft_putendl(list->name);
+			ft_print(size, list, arg);
 	}
+	arg->root = 0;
 	return (0);
 }
 
-int	ft_print_list_rev(t_list *list, t_arg *arg, char *name)
+int		ft_print_list_rev(t_list *list, t_arg *arg, char *name)
 {
-	if (list && name && (name[0] != '.' || arg->a == 1))
+	t_size	*size;
+
+	if (list && name && (name[0] != '.' || arg->a == 1 || arg->root == 1))
 	{
-		while (list->nxt && arg->r == 1)
+		size = ft_calcsize(list, arg);
+		while (list->nxt)
 			list = list->nxt;
-		while (list->prv && arg->r == 1)
+		while (list->prv)
 		{
 			if (list->name[0] != '.' || arg->a == 1)
-				ft_putendl(list->name);
+				ft_print(size, list, arg);
 			list = list->prv;
 		}
 		if (list->name[0] != '.' || arg->a == 1)
-			ft_putendl(list->name);
+			ft_print(size, list, arg);
 	}
+	arg->root = 0;
 	return (0);
 }
 
@@ -421,14 +505,14 @@ int	ft_print_list(t_list *list, t_arg *arg, char *name)
 	return (0);
 }
 
-int	ft_recurchoice(t_list *list, t_arg *arg, char *name)
+int		ft_recurchoice(t_list *list, t_arg *arg, char *name)
 {
 	int ret;
 
 	ret = 0;
-	if (arg->R == 1 && arg->r == 0)
+	if (arg->rr == 1 && arg->r == 0)
 		ret = ft_recursive(list, arg, name);
-	else if (arg->R == 1 && arg->r == 1)
+	else if (arg->rr == 1 && arg->r == 1)
 		ret = ft_recursiverev(list, arg, name);
 	return (ret);
 }
@@ -484,6 +568,7 @@ int		main(int ac, char **av)
 
 	arg = ft_memalloc(sizeof(arg));
 	i = ft_arguments(arg, av);
+	arg->root = 1;
 	b = i;
 	if (i < ac && i > 0 && arg != NULL)
 	{

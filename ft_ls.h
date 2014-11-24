@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/14 11:20:06 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/22 18:03:56 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/11/24 19:35:20 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,18 @@
 typedef struct	s_arg
 {
 	int l;
-	int R;
+	int rr;
 	int a;
 	int r;
 	int t;
+	int root;
 }				t_arg;
+
+typedef struct	s_size
+{
+	int	size;
+	int group;
+}				t_size;
 
 typedef struct	s_list
 {
@@ -45,6 +52,7 @@ typedef struct	s_list
 	int				sub;
 	time_t			date;
 	mode_t			st_mode;
+	off_t			st_size;
 }				t_list;
 
 int		ft_list_dir(char *path, t_arg *arg, int ac, char *name);
@@ -62,5 +70,6 @@ int		ft_arguments(t_arg *arg, char **av);
 int		ft_arg(t_arg *arg, char *str);
 int		ft_checkarg(char *str);
 int		ft_recursive(t_list *list, t_arg *arg, char *name);
+void	ft_print_time(time_t date, t_arg *arg);
 
 #endif
