@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/03 12:03:42 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/20 11:43:01 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/11/25 10:55:23 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,11 @@
 
 # include <string.h>
 
-
 void	ft_putchar(char c);
 void	ft_putstr(char const *str);
 void	ft_putendl(char const *str);
+int		ft_countnum(int n);
+char	*ft_strmalcpy(const char *src);
 void	ft_bzero(void *s, size_t n);
 void	*ft_memset(void *b, int c, size_t len);
 void	*ft_memcpy(void *dst, const void *src, size_t n);
@@ -64,6 +65,7 @@ char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_strtrim(char const *s);
 char	**ft_strsplit(char const *s, char c);
 void	ft_putchar_fd(char c, int fd);
+void	ft_putnstr(char *str, int n);
 void	ft_putstr_fd(char const *str, int fd);
 void	ft_putendl_fd(char const *str, int fd);
 void	ft_putnbr_fd(int n, int fd);

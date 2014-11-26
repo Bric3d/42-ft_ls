@@ -1,25 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_countnum.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2014/11/03 17:52:47 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/26 11:26:27 by bbecker          ###   ########.fr       */
+/*   Created: 2014/11/24 14:37:36 by bbecker           #+#    #+#             */
+/*   Updated: 2014/11/24 15:17:02 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlen(const char *str)
+int	ft_countnum(int n)
 {
-	size_t i;
+	int b;
 
-	if (!str)
-		return (0);
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
+	b = 0;
+	if (n <= 9)
+		b = 1;
+	if (n >= 10)
+	{
+		while (n > 0)
+		{
+			n = n / 10;
+			b++;
+		}
+	}
+	return (b);
 }

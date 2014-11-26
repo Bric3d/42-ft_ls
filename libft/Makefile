@@ -6,7 +6,7 @@
 #    By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/08/11 16:10:24 by bbecker           #+#    #+#              #
-#    Updated: 2014/11/10 08:41:01 by bbecker          ###   ########.fr        #
+#    Updated: 2014/11/25 11:08:08 by bbecker          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,6 +22,8 @@ TOMAKE =	$(F)ft_atoi.c		\
 			$(F)ft_memcmp.c		\
 			$(F)ft_memset.c		\
 			$(F)ft_putstr.c		\
+			$(F)ft_countnum.c	\
+			$(F)ft_putnstr.c	\
 			$(F)ft_strcmp.c		\
 			$(F)ft_strncmp.c	\
 			$(F)ft_strrchr.c	\
@@ -33,6 +35,7 @@ TOMAKE =	$(F)ft_atoi.c		\
 			$(F)ft_putchar.c	\
 			$(F)ft_strcat.c		\
 			$(F)ft_strcpy.c		\
+			$(F)ft_strmalcpy.c	\
 			$(F)ft_strlen.c		\
 			$(F)ft_strncpy.c	\
 			$(F)ft_strstr.c		\
@@ -76,6 +79,8 @@ TOLIB	=	ft_atoi.o			\
 			ft_memcmp.o			\
 			ft_memset.o			\
 			ft_putstr.o			\
+			ft_countnum.o		\
+			ft_putnstr.o		\
 			ft_strcmp.o			\
 			ft_strncmp.o		\
 			ft_strrchr.o		\
@@ -88,6 +93,7 @@ TOLIB	=	ft_atoi.o			\
 			ft_strcat.o			\
 			ft_strlcat.o		\
 			ft_strcpy.o			\
+			ft_strmalcpy.o		\
 			ft_strlen.o			\
 			ft_strncpy.o		\
 			ft_strstr.o			\

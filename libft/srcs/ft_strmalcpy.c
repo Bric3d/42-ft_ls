@@ -1,25 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_strmalcpy.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2014/11/03 17:52:47 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/26 11:26:27 by bbecker          ###   ########.fr       */
+/*   Created: 2014/11/25 10:47:35 by bbecker           #+#    #+#             */
+/*   Updated: 2014/11/26 14:18:12 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlen(const char *str)
+char	*ft_strmalcpy(const char *src)
 {
-	size_t i;
+	int		n;
+	char	*dst;
 
-	if (!str)
-		return (0);
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
+	if (src == NULL)
+		return (NULL);
+	dst = (char *)ft_memalloc(sizeof(char) * (ft_strlen(src) + 1));
+	if (dst == NULL)
+		return (NULL);
+	n = 0;
+	while (src[n])
+	{
+		dst[n] = src[n];
+		n++;
+	}
+	dst[n] = src[n];
+	return (dst);
 }
