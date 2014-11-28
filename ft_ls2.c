@@ -268,8 +268,6 @@ void	ft_write_path(char *prev, t_list *list)
 {
 	char	*tmp;
 
-	//	if (prev[0] != '.' && prev[1] != '/')
-	//	{
 	if ((tmp = ft_strjoin(prev, "/")) == NULL)
 	{
 		ft_error(0, "Malloc");
@@ -281,13 +279,6 @@ void	ft_write_path(char *prev, t_list *list)
 		exit(-1);
 	}
 	free(tmp);
-	/*	}
-		else
-		{
-		tmp = ft_strjoin(prev, "/");
-		list->path = ft_strjoin(tmp, list->name);
-		free(tmp);
-		}*/
 }
 
 void	ft_getuid(t_list *new, uid_t st_uid, gid_t st_gid)
