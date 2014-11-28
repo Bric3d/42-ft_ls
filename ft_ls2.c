@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/16 12:05:00 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/26 14:18:09 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/11/28 19:32:58 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -314,6 +314,7 @@ void	ft_stat(t_list *new, struct stat *buf)
 	new->date = buf->st_mtime;
 	ft_getuid(new, buf->st_uid, buf->st_gid);
 	new->st_size = buf->st_size;
+	new->st_blocks = buf->st_blocks;
 	new->nlink = buf->st_nlink;
 }
 
@@ -395,7 +396,12 @@ int	ft_recursive(t_list *list, t_arg *arg, char *name)
 
 void	ft_print_rights(mode_t st_mode)
 {
-	ft_putchar((S_ISDIR(st_mode)) ? 'd' : '-');
+	if (S_ISDIR(st_mode))
+		ft_putchar('d');
+	else if (S_ISLNK(st_mode))
+		ft_putchar('l');
+	else
+		ft_putchar('-');
 	ft_putchar((st_mode & S_IRUSR) ? 'r' : '-');
 	ft_putchar((st_mode & S_IWUSR) ? 'w' : '-');
 	ft_putchar((st_mode & S_IXUSR) ? 'x' : '-');
@@ -430,6 +436,29 @@ void	ft_print_gn(char *name, int size)
 	ft_putstr("  ");
 }
 
+void	ft_disp_lnk(t_list	*list)
+{
+	char	*lnkcontent;
+	int		ret;
+	int		size;
+
+	if (S_ISLNK(list->st_mode))
+	{
+		size = 1024;
+		lnkcontent = (char *)ft_memalloc(sizeof(char) * (size));
+		if (!lnkcontent)
+		{
+			ft_error(0, "Malloc");
+			exit(-1);
+		}
+		ret = readlink(list->path, lnkcontent, size);
+		lnkcontent[ret] = '\0';
+		ft_putstr(" -> ");
+		ft_putstr(lnkcontent);
+		ft_strsupr(lnkcontent, size);
+	}
+}
+
 void	ft_print(t_size *size, t_list *list, t_arg *arg)
 {
 	if (arg->l == 1)
@@ -441,7 +470,10 @@ void	ft_print(t_size *size, t_list *list, t_arg *arg)
 		ft_print_int(size->size, list->st_size);
 		ft_print_time(list->date);
 	}
-	ft_putendl(list->name);
+	ft_putstr(list->name);
+	if (arg->l == 1)
+		ft_disp_lnk(list);
+	ft_putchar('\n');
 }
 
 void	ft_print_time(time_t date)
@@ -560,13 +592,13 @@ t_list	*ft_maxsize(t_list *list, t_size *size)
 	first = list;
 	while (list->nxt)
 	{
-		size->total = list->st_size + size->total;
+		size->total = list->st_blocks + size->total;
 		i = ft_countnum(list->st_size);
 		if (maxsize < i)
 			maxsize = i;
 		list = list->nxt;
 	}
-	size->total = list->st_size + size->total;
+	size->total = list->st_blocks + size->total;
 	i = ft_countnum(list->st_size);
 	if (maxsize < i)
 		maxsize = i;
@@ -574,18 +606,14 @@ t_list	*ft_maxsize(t_list *list, t_size *size)
 	return (first);
 }
 
-void	ft_print_total(void /*t_size *size, t_arg *arg*/)
-{/*
-	int total;
-
-	total = size->total / 512;
+void	ft_print_total(t_size *size, t_arg *arg)
+{
 	if (arg->l == 1)
 	{
-		ft_putstr("total ");
-		ft_putnbr(total);
-		ft_putchar('\n');
+	ft_putstr("total ");
+	ft_putnbr(size->total);
+	ft_putchar('\n');
 	}
-	*/
 }
 
 int		ft_print_list_st(t_list *list, t_arg *arg, char *name)
@@ -597,7 +625,7 @@ int		ft_print_list_st(t_list *list, t_arg *arg, char *name)
 		while (list->prv)
 			list = list->prv;
 		size = ft_calcsize(list, arg);
-		//ft_print_total(size, arg);
+		ft_print_total(size, arg);
 		while (list->nxt)
 		{
 			if (list->name[0] != '.' || arg->a == 1)
@@ -618,7 +646,7 @@ int		ft_print_list_rev(t_list *list, t_arg *arg, char *name)
 	if (list && name && (name[0] != '.' || arg->a == 1 || arg->root == 1))
 	{
 		size = ft_calcsize(list, arg);
-		//ft_print_total(size, arg);
+		ft_print_total(size, arg);
 		while (list->nxt)
 			list = list->nxt;
 		while (list->prv)

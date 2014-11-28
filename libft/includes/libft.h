@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/03 12:03:42 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/25 10:55:23 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/11/27 16:49:55 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void	ft_putchar(char c);
 void	ft_putstr(char const *str);
 void	ft_putendl(char const *str);
 int		ft_countnum(int n);
+void	ft_strsupr(char *s, size_t n);
 char	*ft_strmalcpy(const char *src);
 void	ft_bzero(void *s, size_t n);
 void	*ft_memset(void *b, int c, size_t len);

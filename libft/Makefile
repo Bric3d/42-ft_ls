@@ -6,7 +6,7 @@
 #    By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/08/11 16:10:24 by bbecker           #+#    #+#              #
-#    Updated: 2014/11/25 11:08:08 by bbecker          ###   ########.fr        #
+#    Updated: 2014/11/27 16:50:33 by bbecker          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,6 +34,7 @@ TOMAKE =	$(F)ft_atoi.c		\
 			$(F)ft_memcpy.c		\
 			$(F)ft_putchar.c	\
 			$(F)ft_strcat.c		\
+			$(F)ft_strsupr.c	\
 			$(F)ft_strcpy.c		\
 			$(F)ft_strmalcpy.c	\
 			$(F)ft_strlen.c		\
@@ -82,6 +83,7 @@ TOLIB	=	ft_atoi.o			\
 			ft_countnum.o		\
 			ft_putnstr.o		\
 			ft_strcmp.o			\
+			ft_strsupr.o		\
 			ft_strncmp.o		\
 			ft_strrchr.o		\
 			ft_toupper.o		\
