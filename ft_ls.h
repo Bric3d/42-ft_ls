@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/14 11:20:06 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/28 18:54:29 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/11/29 20:03:42 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,16 @@
 # include <stdlib.h>
 # include <time.h>
 # include <stdio.h>
+
+# define DT_UNKNOWN	0
+# define DT_FIFO	1
+# define DT_CHR		2
+# define DT_DIR		4
+# define DT_BLK		6
+# define DT_REG		8
+# define DT_LNK		10
+# define DT_SOCK	12
+# define DT_WHT		14
 
 typedef struct	s_arg
 {
