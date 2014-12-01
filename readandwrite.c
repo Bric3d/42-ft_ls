@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/30 17:05:24 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/30 17:06:37 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/12/01 17:35:23 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,11 @@ t_list	*ft_list_read(struct dirent *entry, t_arg *arg, t_list *list, char *dr)
 			exit(-1);
 		}
 		ft_write_path(dr, new);
-		ft_stat(new, buf, entry);
-		if (arg->t == 0)
+		if (arg->rr == 1 || arg->t == 1 || arg->l == 1)
+			ft_stat(new, buf, entry);
+		if (arg->t == 0 && ((arg->l == 0 && arg->rr == 0) || new->sub != -1))
 			list = ft_placeelement(new, list);
-		else if (arg->t == 1)
+		else if (arg->t == 1 && new->sub != -1)
 			list = ft_placelistent_d(new, list);
 		free(buf);
 	}

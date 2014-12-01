@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/30 17:07:02 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/30 17:08:39 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/12/01 18:47:13 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,10 @@ void	ft_isdir(t_list *list, struct dirent *dir)
 
 	if (list && dir)
 	{
-		if (dir->d_type == DT_DIR)
-			list->sub = DT_DIR;
-		else if (dir->d_type == DT_LNK)
+		if (dir->d_type == DT_LNK)
 			list->sub = DT_LNK;
+		else if (dir->d_type == DT_DIR)
+			list->sub = DT_DIR;
 		else if (dir->d_type == DT_CHR)
 			list->sub = DT_CHR;
 		else if (dir->d_type == DT_BLK)
@@ -50,13 +50,13 @@ void	ft_isdir(t_list *list, struct dirent *dir)
 			list->sub = DT_SOCK;
 		else
 		{
-			if ((directory = opendir(list->path)))
+			if ((list->sub = ft_maybedir(list)) != DT_UNKNOWN)
+				return ;
+			else if ((directory = opendir(list->path)))
 			{
 				list->sub = DT_DIR;
 				closedir(directory);
 			}
-			else
-				list->sub = ft_maybedir(list);
 		}
 	}
 }

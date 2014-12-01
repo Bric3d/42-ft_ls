@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/14 11:20:06 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/30 15:26:53 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/12/01 16:53:07 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,6 +116,7 @@ DIR		*ft_opendir(char *path, char *name);
 char	*ft_get_name(char *str);
 t_list	*ft_list_read(struct dirent *entry, t_arg *arg, t_list *list, char *dr);
 void	ft_write_path(char *prev, t_list *list);
-
+t_list	*ft_rewindnff(t_list *list, int r);
+t_list	*ft_listmove(t_list *list, int r);
 
 #endif

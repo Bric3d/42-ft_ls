@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/30 16:48:58 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/30 16:49:48 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/12/01 14:19:32 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 void	ft_print_type(int sub)
 {
-	ft_putnbr(sub);
-	ft_putchar(' ');
 	if (sub == DT_DIR)
 		ft_putchar('d');
 	else if (sub == DT_LNK)
