@@ -1,26 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_ls2.c                                           :+:      :+:    :+:   */
+/*   ft_ls.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2014/11/16 12:05:00 by bbecker           #+#    #+#             */
-/*   Updated: 2014/12/01 18:54:31 by bbecker          ###   ########.fr       */
+/*   Created: 2014/12/02 10:31:42 by bbecker           #+#    #+#             */
+/*   Updated: 2014/12/02 10:32:31 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "ft_ls.h"
-#include <dirent.h>
-#include <sys/types.h>
-#include <sys/dir.h>
-#include <sys/uio.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include "libft.h"
-#include <errno.h>
-#include <stdlib.h>
 
 char	*ft_get_name(char *str)
 {
