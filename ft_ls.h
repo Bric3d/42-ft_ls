@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/14 11:20:06 by bbecker           #+#    #+#             */
-/*   Updated: 2014/12/01 16:53:07 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/12/08 13:39:05 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@
 # define DT_LNK		10
 # define DT_SOCK	12
 # define DT_WHT		14
+# define LS_MAJOR(x) ((int32_t)(((u_int32_t)(x) >> 24) & 0xff))
+# define LS_MINOR(x) ((int32_t)((x) & 0xffffff))
 
 typedef struct	s_arg
 {
@@ -55,12 +57,13 @@ typedef struct	s_size
 	int		groupsize;
 	int		usersize;
 	int		linksize;
+	int		min;
 }				t_size;
 
 typedef struct	s_list
 {
-	struct	s_list	*prv;
-	struct	s_list	*nxt;
+	struct s_list	*prv;
+	struct s_list	*nxt;
 	char			*name;
 	char			*path;
 	char			*username;
@@ -68,6 +71,7 @@ typedef struct	s_list
 	quad_t			st_blocks;
 	off_t			st_size;
 	mode_t			st_mode;
+	dev_t			st_rdev;
 	nlink_t			nlink;
 	time_t			date;
 	int				sub;
@@ -76,10 +80,10 @@ typedef struct	s_list
 void	ft_freelist(t_list *list);
 t_list	*ft_freerev(t_list	*list);
 t_list	*ft_free(t_list	*list);
-int	ft_error(int i, char *str);
-int ft_checkarg(char *str);
-int ft_arg(t_arg *arg, char *str);
-int ft_arguments(t_arg *arg, char **av);
+int		ft_error(int i, char *str);
+int		ft_checkarg(char *str);
+int		ft_arg(t_arg *arg, char *str);
+int		ft_arguments(t_arg *arg, char **av);
 t_list	*ft_createlistelem(void);
 void	ft_placebefore(t_list *list1, t_list *list2);
 void	ft_placebetween(t_list *list, t_list *list1, t_list *list2);
@@ -89,18 +93,19 @@ t_list	*ft_placeelement(t_list *list1, t_list *list2);
 void	ft_isdir(t_list *list, struct dirent *dir);
 int		ft_maybedir(t_list *list);
 int		ft_recurchoice(t_list *list, t_arg *arg, char *name);
-int	ft_recursive(t_list *list, t_arg *arg, char *name);
-int	ft_recursiverev(t_list *list, t_arg *arg, char *name);
+int		ft_recursive(t_list *list, t_arg *arg, char *name);
+int		ft_recursiverev(t_list *list, t_arg *arg, char *name);
 int		ft_usersize(t_list *list);
 int		ft_groupsize(t_list *list);
-int	ft_linksize(t_list *list);
+void	ft_calcmm(t_list *list, t_size *size);
+int		ft_linksize(t_list *list);
 t_size	*ft_calcsize(t_list *list, t_arg *arg);
 t_list	*ft_maxsize(t_list *list, t_size *size);
 void	ft_getuid(t_list *new, uid_t st_uid, gid_t st_gid);
 void	ft_stat(t_list *new, struct stat *buf, struct dirent *dir);
 void	ft_print_path(char *name, char *path, t_arg *arg, int ac);
 void	ft_print(t_size *size, t_list *list, t_arg *arg);
-int	ft_print_list(t_list *list, t_arg *arg, char *name);
+int		ft_print_list(t_list *list, t_arg *arg, char *name);
 int		ft_print_list_rev(t_list *list, t_arg *arg, char *name);
 int		ft_print_list_st(t_list *list, t_arg *arg, char *name);
 void	ft_print_type(int sub);
@@ -118,5 +123,6 @@ t_list	*ft_list_read(struct dirent *entry, t_arg *arg, t_list *list, char *dr);
 void	ft_write_path(char *prev, t_list *list);
 t_list	*ft_rewindnff(t_list *list, int r);
 t_list	*ft_listmove(t_list *list, int r);
+void	ft_print_majmin(t_list *list, t_size *size);
 
 #endif
