@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/12/02 10:31:42 by bbecker           #+#    #+#             */
-/*   Updated: 2014/12/02 10:32:31 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/12/19 19:46:50 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ t_list	*ft_createlistarg(char *av, t_list *list, struct stat *buf, t_arg *arg)
 		exit(-1);
 	}
 	new->name = ft_strmalcpy(av);
-	new->date = buf->st_mtime;
+	new->path = ft_strmalcpy(av);
+	ft_stat(new, buf, NULL);
 	if (arg->t == 0)
 		list = ft_placeelement(new, list);
 	if (arg->t == 1)
@@ -73,6 +74,35 @@ t_list	*ft_sort_arg(char **av, int i, t_arg *arg)
 	return (list);
 }
 
+void	ft_read_arg(t_list *list, t_arg *arg, int ac, int i)
+{
+	t_size	*size;
+	t_list	*listtmp;
+	int		c;
+
+	c = 0;
+	listtmp = list;
+	size = ft_calcsize(list, arg);
+	while (list)
+	{
+		if (list->sub != DT_DIR)
+			ft_print(size, list, arg), c++;
+		list = ft_listmove(list, arg->r);
+	}
+	list = listtmp;
+	while (list)
+	{
+		if (list->sub == DT_DIR)
+		{
+			if (c != 0)
+				ft_putchar('\n');
+			ft_list_dir(list->name, arg, ac - i, ft_get_name(list->name)), c++;
+		}
+		list = ft_listmove(list, arg->r);
+	}
+	free(size);
+}
+
 int		main(int ac, char **av)
 {
 	int		i;
@@ -85,13 +115,7 @@ int		main(int ac, char **av)
 	if (i < ac && i > 0 && arg != NULL)
 	{
 		list = ft_sort_arg(av, i, arg);
-		while (list)
-		{
-			ft_list_dir(list->name, arg, ac - i, ft_get_name(list->name));
-			list = ft_listmove(list, arg->r);
-			if (ac - i >= 2)
-				ft_putchar('\n');
-		}
+		ft_read_arg(list, arg, ac, i);
 	}
 	else if (i >= 0 && arg != NULL)
 		ft_list_dir(".", arg, 0, ".");
