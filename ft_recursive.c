@@ -6,75 +6,57 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/30 16:52:30 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/30 16:53:15 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/12/20 18:44:21 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-int	ft_recursiverev(t_list *list, t_arg *arg, char *name)
+int	ft_recursiverev(t_list *list, t_arg *arg, int n)
 {
+	int c;
+
+	c = 0;
 	while (list->nxt)
 		list = list->nxt;
-	while (list && list->prv)
+	while (list)
 	{
 		if (list && list->sub == DT_DIR && ft_strcmp(list->name, "..") != 0
 				&& ft_strcmp(list->name, ".") != 0)
-		{
-			if (name[0] != '.' || arg->a == 1)
-				ft_putchar('\n');
-			ft_list_dir(list->path, arg, 3, list->name);
-		}
-		list = ft_freerev(list);
-	}
-	if (list && list->sub == DT_DIR && ft_strcmp(list->name, "..") != 0
-			&& ft_strcmp(list->name, ".") != 0)
-	{
-		if (name[0] != '.' || arg->a == 1)
-			ft_putchar('\n');
-		ft_list_dir(list->path, arg, 3, list->name);
-		list = ft_freerev(list);
-		free(list);
+			c = c + ft_list_dir(list->path, arg, 3, c + n);
+		list = ft_free(list, arg->r);
 	}
 	return (0);
 }
 
-int	ft_recursive(t_list *list, t_arg *arg, char *name)
+int	ft_recursive(t_list *list, t_arg *arg, int n)
 {
+	int c;
+
+	c = 0;
 	while (list->prv)
 		list = list->prv;
-	while (list->nxt)
+	while (list)
 	{
 		if (list && list->sub == DT_DIR && ft_strcmp(list->name, "..") != 0
 				&& ft_strcmp(list->name, ".") != 0)
-		{
-			if (name[0] != '.' || arg->a == 1)
-				ft_putchar('\n');
-			ft_list_dir(list->path, arg, 3, list->name);
-		}
-		list = ft_free(list);
+			c = c + ft_list_dir(list->path, arg, 3, c + n);
+		list = ft_free(list, arg->r);
 	}
-	if (list && list->sub == DT_DIR && ft_strcmp(list->name, "..") != 0
-			&& ft_strcmp(list->name, ".") != 0)
-	{
-		if (name[0] != '.' || arg->a == 1)
-			ft_putchar('\n');
-		ft_list_dir(list->path, arg, 3, list->name);
-		list = ft_free(list);
-	}
-	return (0);
+	return (c);
 }
 
-int	ft_recurchoice(t_list *list, t_arg *arg, char *name)
+int	ft_recurchoice(t_list *list, t_arg *arg, int c)
 {
-	int ret;
+	int n;
 
-	ret = 0;
+	n = 0;
 	if (arg->rr == 1 && arg->r == 0)
-		ret = ft_recursive(list, arg, name);
+		n = ft_recursive(list, arg, c + n);
 	else if (arg->rr == 1 && arg->r == 1)
-		ret = ft_recursiverev(list, arg, name);
+		n = ft_recursiverev(list, arg, c + n);
 	else
-		list = ft_freerev(list);
-	return (ret);
+		while (list)
+			list = ft_free(list, arg->r);
+	return (n);
 }

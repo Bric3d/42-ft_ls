@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/30 16:47:07 by bbecker           #+#    #+#             */
-/*   Updated: 2014/12/01 18:46:11 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/12/20 14:24:48 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,33 +29,14 @@ void	ft_freelist(t_list *list)
 	free(list);
 }
 
-t_list	*ft_freerev(t_list *list)
+t_list	*ft_free(t_list *list, int r)
 {
 	t_list	*listtmp;
 
 	listtmp = NULL;
 	if (list)
 	{
-		if (list->prv)
-			listtmp = list->prv;
-		else
-			listtmp = NULL;
-		ft_freelist(list);
-	}
-	return (listtmp);
-}
-
-t_list	*ft_free(t_list *list)
-{
-	t_list	*listtmp;
-
-	listtmp = NULL;
-	if (list)
-	{
-		if (list->nxt)
-			listtmp = list->nxt;
-		else
-			listtmp = NULL;
+		listtmp = ft_listmove(list, r);
 		ft_freelist(list);
 	}
 	return (listtmp);

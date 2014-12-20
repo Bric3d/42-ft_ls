@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/30 17:05:24 by bbecker           #+#    #+#             */
-/*   Updated: 2014/12/01 17:35:23 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/12/20 16:53:42 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,16 +43,25 @@ t_list	*ft_list_read(struct dirent *entry, t_arg *arg, t_list *list, char *dr)
 void	ft_write_path(char *prev, t_list *list)
 {
 	char	*tmp;
+	int		c;
 
-	if ((tmp = ft_strjoin(prev, "/")) == NULL)
+	c = 0;
+	if (ft_strcmp(prev, "/") != 0)
 	{
-		ft_error(0, "Malloc");
-		exit(-1);
+		if ((tmp = ft_strjoin(prev, "/")) == NULL)
+		{
+			ft_error(0, "Malloc");
+			exit(-1);
+		}
+		c = 1;
 	}
+	else
+		tmp = prev;
 	if ((list->path = ft_strjoin(tmp, list->name)) == NULL)
 	{
 		ft_error(0, "Malloc");
 		exit(-1);
 	}
-	free(tmp);
+	if (c == 1)
+		free(tmp);
 }

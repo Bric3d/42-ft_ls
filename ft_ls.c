@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/12/02 10:31:42 by bbecker           #+#    #+#             */
-/*   Updated: 2014/12/19 19:46:50 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/12/20 18:53:24 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,13 +92,11 @@ void	ft_read_arg(t_list *list, t_arg *arg, int ac, int i)
 	list = listtmp;
 	while (list)
 	{
+		if (c != 0 && list->sub == DT_DIR)
+			ft_putchar('\n');
 		if (list->sub == DT_DIR)
-		{
-			if (c != 0)
-				ft_putchar('\n');
-			ft_list_dir(list->name, arg, ac - i, ft_get_name(list->name)), c++;
-		}
-		list = ft_listmove(list, arg->r);
+			ft_list_dir(list->name, arg, ac - i, 0), c++;
+		list = ft_free(list, arg->r);
 	}
 	free(size);
 }
@@ -111,14 +109,14 @@ int		main(int ac, char **av)
 
 	arg = ft_memalloc(sizeof(arg));
 	i = ft_arguments(arg, av);
-	arg->root = 1;
 	if (i < ac && i > 0 && arg != NULL)
 	{
+		arg->root = 1;
 		list = ft_sort_arg(av, i, arg);
 		ft_read_arg(list, arg, ac, i);
 	}
 	else if (i >= 0 && arg != NULL)
-		ft_list_dir(".", arg, 0, ".");
+		ft_list_dir(".", arg, 0, 0);
 	if (i < 0 || arg == NULL)
 		ft_error(i, "Malloc");
 	if (arg != NULL)

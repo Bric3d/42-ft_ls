@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/14 11:20:06 by bbecker           #+#    #+#             */
-/*   Updated: 2014/12/08 13:39:05 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/12/20 18:33:18 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,8 +78,7 @@ typedef struct	s_list
 }				t_list;
 
 void	ft_freelist(t_list *list);
-t_list	*ft_freerev(t_list	*list);
-t_list	*ft_free(t_list	*list);
+t_list	*ft_free(t_list *list, int r);
 int		ft_error(int i, char *str);
 int		ft_checkarg(char *str);
 int		ft_arg(t_arg *arg, char *str);
@@ -92,9 +91,9 @@ t_list	*ft_placelistent_d(t_list *list, t_list *list2);
 t_list	*ft_placeelement(t_list *list1, t_list *list2);
 void	ft_isdir(t_list *list, struct dirent *dir);
 int		ft_maybedir(t_list *list);
-int		ft_recurchoice(t_list *list, t_arg *arg, char *name);
-int		ft_recursive(t_list *list, t_arg *arg, char *name);
-int		ft_recursiverev(t_list *list, t_arg *arg, char *name);
+int		ft_recurchoice(t_list *list, t_arg *arg, int c);
+int		ft_recursive(t_list *list, t_arg *arg, int n);
+int		ft_recursiverev(t_list *list, t_arg *arg, int n);
 int		ft_usersize(t_list *list);
 int		ft_groupsize(t_list *list);
 void	ft_calcmm(t_list *list, t_size *size);
@@ -103,7 +102,7 @@ t_size	*ft_calcsize(t_list *list, t_arg *arg);
 t_list	*ft_maxsize(t_list *list, t_size *size);
 void	ft_getuid(t_list *new, uid_t st_uid, gid_t st_gid);
 void	ft_stat(t_list *new, struct stat *buf, struct dirent *dir);
-void	ft_print_path(char *name, char *path, t_arg *arg, int ac);
+int		ft_print_path(char *name, char *path, t_arg *arg, int ac);
 void	ft_print(t_size *size, t_list *list, t_arg *arg);
 int		ft_print_list(t_list *list, t_arg *arg, char *name);
 int		ft_print_list_rev(t_list *list, t_arg *arg, char *name);
@@ -115,7 +114,7 @@ void	ft_print_gn(char *name, int size);
 void	ft_disp_lnk(t_list	*list);
 void	ft_print_total(t_size *size, t_arg *arg);
 void	ft_print_time(time_t date);
-int		ft_list_dir(char *path, t_arg *arg, int ac, char *name);
+int		ft_list_dir(char *path, t_arg *arg, int ac, int c);
 int		ft_closedir(DIR *dir, char *name);
 DIR		*ft_opendir(char *path, char *name);
 char	*ft_get_name(char *str);
