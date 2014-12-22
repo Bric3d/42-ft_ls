@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/30 16:50:44 by bbecker           #+#    #+#             */
-/*   Updated: 2014/12/20 19:03:44 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/12/22 16:20:01 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,10 @@ void	ft_print(t_size *size, t_list *list, t_arg *arg)
 		ft_print_int(size->linksize, list->nlink);
 		ft_print_gn(list->username, size->usersize);
 		ft_print_gn(list->groupname, size->groupsize);
-		ft_print_int(size->size, list->st_size);
+		if (list->sub == DT_CHR || list->sub == DT_BLK)
+			ft_print_majmin(list, size);
+		else
+			ft_print_int(size->size, list->st_size);
 		ft_print_time(list->date);
 	}
 	ft_putstr(list->name);
@@ -95,7 +98,7 @@ void	ft_print(t_size *size, t_list *list, t_arg *arg)
 	ft_putchar('\n');
 }
 
-int	ft_print_path(char *name, char *path, t_arg *arg, int ac)
+int		ft_print_path(char *name, char *path, t_arg *arg, int ac)
 {
 	if (ac >= 2 && name && (name[0] != '.' || arg->a == 1))
 	{

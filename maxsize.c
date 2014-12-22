@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/30 16:55:15 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/30 16:57:01 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/12/22 11:07:21 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ t_size	*ft_calcsize(t_list *list, t_arg *arg)
 		size->groupsize = ft_groupsize(list);
 		size->usersize = ft_usersize(list);
 		size->linksize = ft_linksize(list);
+		ft_calcmm(list, size);
 	}
 	return (size);
 }

@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/14 11:20:06 by bbecker           #+#    #+#             */
-/*   Updated: 2014/12/20 18:33:18 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/12/22 11:50:35 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ typedef struct	s_size
 	int		usersize;
 	int		linksize;
 	int		min;
+	int		maj;
 }				t_size;
 
 typedef struct	s_list
