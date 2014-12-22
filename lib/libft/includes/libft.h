@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/03 12:03:42 by bbecker           #+#    #+#             */
-/*   Updated: 2014/11/27 16:49:55 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/12/17 09:31:53 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,5 +71,6 @@ void	ft_putstr_fd(char const *str, int fd);
 void	ft_putendl_fd(char const *str, int fd);
 void	ft_putnbr_fd(int n, int fd);
 char	*ft_itoa(int n);
+double	ft_abs(double n);
 
 #endif

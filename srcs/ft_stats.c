@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/30 17:17:49 by bbecker           #+#    #+#             */
-/*   Updated: 2014/12/02 11:06:43 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/12/22 12:43:29 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void	ft_stat(t_list *new, struct stat *buf, struct dirent *dir)
 	new->date = buf->st_mtime;
 	ft_getuid(new, buf->st_uid, buf->st_gid);
 	new->st_size = buf->st_size;
+	new->st_rdev = buf->st_rdev;
 	new->st_blocks = buf->st_blocks;
 	new->nlink = buf->st_nlink;
 }

@@ -6,7 +6,7 @@
 /*   By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/11/30 16:48:58 by bbecker           #+#    #+#             */
-/*   Updated: 2014/12/01 14:19:32 by bbecker          ###   ########.fr       */
+/*   Updated: 2014/12/22 16:40:06 by bbecker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,15 +35,24 @@ void	ft_print_type(int sub)
 void	ft_print_rights(mode_t st_mode, int sub)
 {
 	ft_print_type(sub);
-	ft_putchar((st_mode & S_IRUSR) ? 'r' : '-');
-	ft_putchar((st_mode & S_IWUSR) ? 'w' : '-');
-	ft_putchar((st_mode & S_IXUSR) ? 'x' : '-');
-	ft_putchar((st_mode & S_IRGRP) ? 'r' : '-');
-	ft_putchar((st_mode & S_IWGRP) ? 'w' : '-');
-	ft_putchar((st_mode & S_IXGRP) ? 'x' : '-');
-	ft_putchar((st_mode & S_IROTH) ? 'r' : '-');
-	ft_putchar((st_mode & S_IWOTH) ? 'w' : '-');
-	ft_putchar((st_mode & S_IXOTH) ? 'x' : '-');
+	ft_putchar(st_mode & S_IRUSR ? 'r' : '-');
+	ft_putchar(st_mode & S_IWUSR ? 'w' : '-');
+	if (st_mode & S_ISUID)
+		ft_putchar(st_mode & S_IXUSR ? 's' : 'S');
+	else
+		ft_putchar(st_mode & S_IXUSR ? 'x' : '-');
+	ft_putchar(st_mode & S_IRGRP ? 'r' : '-');
+	ft_putchar(st_mode & S_IWGRP ? 'w' : '-');
+	if (st_mode & S_ISGID)
+		ft_putchar(st_mode & S_IXGRP ? 's' : 'S');
+	else
+		ft_putchar(st_mode & S_IXGRP ? 'x' : '-');
+	ft_putchar(st_mode & S_IROTH ? 'r' : '-');
+	ft_putchar(st_mode & S_IWOTH ? 'w' : '-');
+	if (st_mode & S_ISVTX)
+		ft_putchar(st_mode & S_IXOTH ? 't' : 'T');
+	else
+		ft_putchar(st_mode & S_IXOTH ? 'x' : '-');
 	ft_putstr("  ");
 }
 

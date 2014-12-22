@@ -6,11 +6,11 @@
 #    By: bbecker <bbecker@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/08/11 16:10:24 by bbecker           #+#    #+#              #
-#    Updated: 2014/11/27 16:50:33 by bbecker          ###   ########.fr        #
+#    Updated: 2014/12/22 17:19:34 by bbecker          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = libft.a
+NAME = ../libft.a
 
 F = ./srcs/
 
@@ -73,8 +73,11 @@ TOMAKE =	$(F)ft_atoi.c		\
 			$(F)ft_putendl.c	\
 			$(F)ft_putendl_fd.c	\
 			$(F)ft_putnbr_fd.c	\
-			$(F)ft_putstr_fd.c
+			$(F)ft_putstr_fd.c	\
+			$(F)ft_abs.c
+
 TOLIB	=	ft_atoi.o			\
+			ft_abs.o			\
 			ft_isalpha.o		\
 			ft_isprint.o		\
 			ft_memcmp.o			\
@@ -141,9 +144,11 @@ $(NAME):
 	ranlib $(NAME)
 
 clean :
-	/bin/rm -rf $(TOLIB) 
+	/bin/rm -rf $(TOLIB)
 
 fclean: clean
 	/bin/rm -f $(NAME)
 
 re: fclean all
+
+.PHONY = re fclean clean all
